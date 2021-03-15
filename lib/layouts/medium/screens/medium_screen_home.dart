@@ -1,13 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_starter/layouts/large/screens/large_screen_home.dart';
 import 'package:flutter_firebase_starter/responsive_builder/responsive_builder.dart';
+import 'package:flutter_firebase_starter/widgets/capp_bar.dart';
 
 class MediumScreenHome extends StatelessWidget {
+  final dynamic data;
+
+  const MediumScreenHome({Key key, this.data}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveBuilder(
       builder: (context, sizingInfo) {
         return Scaffold(
-          appBar: AppBar(elevation: 0),
+          appBar: PreferredSize(
+            child: CAppBar(
+              leading: Text('[C]Photos'),
+              trailing: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: Color(0xff5f6368).withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.search,
+                      color: Color(0xff5f6368),
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: Color(0xff7600c2).withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.help_outline_rounded,
+                      color: Color(0xff7600c2),
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: Color(0xff4f7ee1).withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.settings,
+                      color: Color(0xff4f7ee1),
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  CircleAvatar(
+                    child: Text('Z'),
+                  ),
+                ],
+              ),
+            ),
+            preferredSize: Size.fromHeight(90),
+          ),
           body: Row(
             children: [
               NavigationRail(
@@ -21,23 +76,30 @@ class MediumScreenHome extends StatelessWidget {
                 labelType: NavigationRailLabelType.selected,
                 destinations: [
                   NavigationRailDestination(
-                    icon: Icon(Icons.favorite_border),
-                    selectedIcon: Icon(Icons.favorite),
-                    label: Text('First'),
+                    icon: Flexible(child: Icon(Icons.photo_outlined, size: 18)),
+                    selectedIcon: Flexible(child: Icon(Icons.photo, size: 18)),
+                    label: Text('Photos'),
                   ),
                   NavigationRailDestination(
-                    icon: Icon(Icons.bookmark_border),
-                    selectedIcon: Icon(Icons.book),
-                    label: Text('Second'),
+                    icon:
+                        Flexible(child: Icon(Icons.favorite_outline, size: 18)),
+                    selectedIcon:
+                        Flexible(child: Icon(Icons.favorite, size: 18)),
+                    label: Text('Favorite'),
                   ),
                   NavigationRailDestination(
-                    icon: Icon(Icons.star_border),
-                    selectedIcon: Icon(Icons.star),
-                    label: Text('Third'),
+                    icon: Flexible(child: Icon(Icons.delete_outline, size: 18)),
+                    selectedIcon: Flexible(child: Icon(Icons.delete, size: 18)),
+                    label: Text('Bin'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Flexible(child: Icon(Icons.cloud_outlined, size: 18)),
+                    selectedIcon: Flexible(child: Icon(Icons.cloud, size: 18)),
+                    label: Text('Bin'),
                   ),
                 ],
               ),
-              VerticalDivider(thickness: 1, width: 1),
+              // VerticalDivider(thickness: 1, width: 1),
               Expanded(
                 child: GridView.builder(
                   padding: EdgeInsets.all(5),

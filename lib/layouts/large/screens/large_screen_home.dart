@@ -1,111 +1,114 @@
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_starter/helpers/frontend/platform_checker.dart';
 import 'package:flutter_firebase_starter/responsive_builder/responsive_builder.dart';
+import 'package:flutter_firebase_starter/widgets/capp_bar.dart';
 
 class LargeScreenHome extends StatelessWidget {
+  final dynamic data;
+
+  const LargeScreenHome({Key key, this.data}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ResponsiveBuilder(
       builder: (context, sizingInfo) {
         return Scaffold(
+          backgroundColor:
+              (currentDevice.darkMode) ? Colors.black : Colors.white,
           appBar: PreferredSize(
-            child: CAppBar(
-              leading: Text('[C] Photos'),
-              body: SearchBar(),
-              trailing: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: Color(0xff7600c2).withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.help_outline_rounded,
-                      color: Color(0xff7600c2),
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: Color(0xff4f7ee1).withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.settings,
-                      color: Color(0xff4f7ee1),
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  CircleAvatar(
-                    child: Text('Z'),
-                  ),
-                ],
-              ),
+            child: buildLargeAppBar(
+              leading: '[C]Photos',
+              body: LargeSearchBar(),
+              trailing: [
+                CupertinoAppBarButton(
+                  onTap: () {},
+                  iconData: CupertinoIcons.question,
+                ),
+                SizedBox(width: 15),
+                CupertinoAppBarButton(
+                  onTap: () {},
+                  iconData: CupertinoIcons.settings,
+                ),
+                SizedBox(width: 15),
+                CircleAvatar(
+                  child: Text('Z'),
+                ),
+              ],
             ),
             preferredSize: Size.fromHeight(100),
           ),
           body: Row(
             children: [
-              NavigationRail(
-                extended: true,
-                selectedIndex: 0,
-                onDestinationSelected: (int index) {
-                  // setState(() {
-                  //   _selectedIndex = index;
-                  // });
-                },
-                destinations: [
-                  NavigationRailDestination(
-                    icon: Icon(Icons.photo_outlined),
-                    selectedIcon: Icon(Icons.photo),
-                    label: Text('Photos'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.favorite_outline),
-                    selectedIcon: Icon(Icons.favorite),
-                    label: Text('Favourite'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.delete_outline),
-                    selectedIcon: Icon(Icons.delete),
-                    label: Text('Bin'),
-                  ),
-                  NavigationRailDestination(
-                    padding: EdgeInsets.only(top: 15),
-                    icon: Icon(Icons.cloud_outlined),
-                    selectedIcon: Icon(Icons.cloud),
-                    label: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Storage'),
-                        SizedBox(height: 5),
-                        Container(
-                          child: Row(
+              ClipRRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
+                  child: Container(
+                    color: Colors.grey.withOpacity(0.3),
+                    child: NavigationRail(
+                      backgroundColor: Colors.transparent,
+                      extended: true,
+                      selectedIndex: 0,
+                      onDestinationSelected: (int index) {
+                        // setState(() {
+                        //   _selectedIndex = index;
+                        // });
+                      },
+                      groupAlignment: -1.0,
+                      destinations: [
+                        NavigationRailDestination(
+                          icon: Icon(Icons.photo_outlined),
+                          selectedIcon: Icon(Icons.photo),
+                          label: Text('Photos'),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(Icons.favorite_outline),
+                          selectedIcon: Icon(Icons.favorite),
+                          label: Text('Favourite'),
+                        ),
+                        NavigationRailDestination(
+                          icon: Icon(Icons.delete_outline),
+                          selectedIcon: Icon(Icons.delete),
+                          label: Text('Bin'),
+                        ),
+                        NavigationRailDestination(
+                          padding: EdgeInsets.only(top: 15),
+                          icon: Icon(Icons.cloud_outlined),
+                          selectedIcon: Icon(Icons.cloud),
+                          label: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text('Storage'),
+                              SizedBox(height: 5),
                               Container(
-                                width: 100,
-                                child: LinearProgressIndicator(
-                                  backgroundColor: Colors.grey,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 100,
+                                      child: LinearProgressIndicator(
+                                        backgroundColor: Colors.grey,
+                                      ),
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      '10% of 14.5GB',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                              SizedBox(width: 5),
-                              Text(
-                                '10% of 14.5GB',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                ),
-                              )
                             ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                ],
+                ),
               ),
-              // VerticalDivider(thickness: 1, width: 1),
+              VerticalDivider(thickness: 1, width: 1),
               Expanded(
                 child: Column(
                   children: [
@@ -148,8 +151,70 @@ class LargeScreenHome extends StatelessWidget {
   }
 }
 
-class SearchBar extends StatelessWidget {
-  const SearchBar({
+class CupertinoAppBarButton extends StatelessWidget {
+  const CupertinoAppBarButton({
+    Key key,
+    this.iconData,
+    this.onTap,
+  }) : super(key: key);
+  final IconData iconData;
+  final Function onTap;
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: (currentDevice.platform == 'Ios')
+            ? EdgeInsets.all(5)
+            : EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+        decoration: BoxDecoration(
+          color: (currentDevice.platform == 'Ios')
+              ? Colors.transparent
+              : (currentDevice.darkMode)
+                  ? Color(0xff686868)
+                  : Color(0xffF6F6F6),
+
+          borderRadius: (currentDevice.platform == 'Ios')
+              ? null
+              : BorderRadius.circular(5),
+          // border: Border.all(color: Colors.white, width: 0.0),
+          shape: (currentDevice.platform == 'Ios')
+              ? BoxShape.circle
+              : BoxShape.rectangle,
+        ),
+        child: Icon(
+          iconData,
+          size: 22,
+          color: (currentDevice.darkMode) ? Colors.white : Color(0xff565656),
+        ),
+      ),
+    );
+  }
+}
+
+class MaterialAppBarButton extends StatelessWidget {
+  const MaterialAppBarButton({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        color: Color(0xff7600c2).withOpacity(0.1),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        Icons.help_outline_rounded,
+        color: Color(0xff7600c2),
+      ),
+    );
+  }
+}
+
+class LargeSearchBar extends StatelessWidget {
+  const LargeSearchBar({
     Key key,
   }) : super(key: key);
 
@@ -157,17 +222,41 @@ class SearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 15),
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 2),
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 1),
         decoration: BoxDecoration(
           color: Colors.grey.withOpacity(0.15),
           borderRadius: BorderRadius.circular(5),
+          border: Border.all(
+            width: 0.2,
+            color: (currentDevice.darkMode) ? Colors.white : Colors.black,
+          ),
         ),
         child: TextField(
+          cursorColor: (currentDevice.darkMode) ? Colors.white : Colors.black,
+          style: TextStyle(
+              color: (currentDevice.darkMode) ? Colors.white : Colors.black),
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.search),
+            contentPadding: EdgeInsets.all(13),
+            prefixIcon: Icon(
+              (currentDevice.designType == 'Cupertino')
+                  ? CupertinoIcons.search
+                  : Icons.search,
+              color: (currentDevice.designType == 'Cupertino')
+                  ? Color(0xff989A9B)
+                  : (currentDevice.darkMode)
+                      ? Color(0xff)
+                      : Color(0xff),
+            ),
             border: InputBorder.none,
             hintText: 'Search photos',
+            hintStyle: TextStyle(
+              color: (currentDevice.designType == 'Cupertino')
+                  ? Color(0xff989A9B)
+                  : (currentDevice.darkMode)
+                      ? Color(0xff)
+                      : Color(0xff),
+            ),
           ),
         ),
       ),
@@ -175,36 +264,64 @@ class SearchBar extends StatelessWidget {
   }
 }
 
-class CAppBar extends StatelessWidget {
-  const CAppBar({
-    Key key,
-    this.leading,
-    this.body,
-    this.trailing,
-  }) : super(key: key);
-  final Widget leading;
-  final Widget body;
-  final Widget trailing;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border(
-            bottom: BorderSide(
-              color: Colors.grey,
-              width: 0.5,
+Widget buildLargeAppBar({String leading, Widget body, List<Widget> trailing}) {
+  print(currentDevice.designType);
+  if (currentDevice.designType == 'Material') {
+    return CAppBar(
+      leading: leading ?? Text('Material'),
+      body: body ?? Container(),
+      trailing: trailing ?? Container(),
+    );
+  } else if (currentDevice.designType == 'Cupertino') {
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 30,
+          sigmaY: 30,
+          tileMode: TileMode.decal,
+        ),
+        child: CAppBar(
+          appBarStyle: BoxDecoration(
+            color: (currentDevice.darkMode)
+                ? Colors.white.withOpacity(0.2)
+                : Colors.black.withOpacity(0.2),
+            border: Border(
+              bottom: BorderSide(
+                color: (currentDevice.darkMode) ? Colors.white : Colors.black,
+                width: 0.6,
+              ),
             ),
-          )),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          (leading ?? Container()),
-          (body ?? Container()),
-          (trailing ?? Container()),
-        ],
+          ),
+          leading: Text(
+            leading ?? 'Cupertino',
+            style: TextStyle(
+              color: (currentDevice.darkMode) ? Colors.white : Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 30,
+            ),
+          ),
+          body: body ?? Container(),
+          trailing: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: trailing ??
+                [
+                  Container(),
+                ],
+          ),
+        ),
       ),
+    );
+  } else if (currentDevice.designType == 'Metro') {
+    return CAppBar(
+      leading: leading ?? Text('Metro'),
+      body: body ?? Container(),
+      trailing: trailing ?? Container(),
+    );
+  } else {
+    return CAppBar(
+      leading: leading ?? Text('Other'),
+      body: body ?? Container(),
+      trailing: trailing ?? Container(),
     );
   }
 }

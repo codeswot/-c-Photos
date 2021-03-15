@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 enum DeviceScreenSize { Small, Medium, Large }
 enum DeviceType { Mobile, Tablet, Other, Desktop }
+enum DeviceOS { Macos, Ios, Android, Windows, Other }
 
 class DeviceScreenInfo {
   final Orientation orientation;
@@ -18,7 +19,12 @@ class DeviceScreenInfo {
 
 class DeviceInfo {
   final DeviceType deviceType;
+  final DeviceOS deviceOS;
   final String platform;
 
-  DeviceInfo({this.deviceType, this.platform});
+  DeviceInfo({
+    this.deviceType,
+    this.platform,
+    this.deviceOS,
+  });
 }
