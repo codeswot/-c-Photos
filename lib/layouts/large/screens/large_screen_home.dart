@@ -41,74 +41,12 @@ class LargeScreenHome extends StatelessWidget {
           ),
           body: Row(
             children: [
-              ClipRRect(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
-                  child: Container(
-                    color: Colors.grey.withOpacity(0.3),
-                    child: NavigationRail(
-                      backgroundColor: Colors.transparent,
-                      extended: true,
-                      selectedIndex: 0,
-                      onDestinationSelected: (int index) {
-                        // setState(() {
-                        //   _selectedIndex = index;
-                        // });
-                      },
-                      groupAlignment: -1.0,
-                      destinations: [
-                        NavigationRailDestination(
-                          icon: Icon(Icons.photo_outlined),
-                          selectedIcon: Icon(Icons.photo),
-                          label: Text('Photos'),
-                        ),
-                        NavigationRailDestination(
-                          icon: Icon(Icons.favorite_outline),
-                          selectedIcon: Icon(Icons.favorite),
-                          label: Text('Favourite'),
-                        ),
-                        NavigationRailDestination(
-                          icon: Icon(Icons.delete_outline),
-                          selectedIcon: Icon(Icons.delete),
-                          label: Text('Bin'),
-                        ),
-                        NavigationRailDestination(
-                          padding: EdgeInsets.only(top: 15),
-                          icon: Icon(Icons.cloud_outlined),
-                          selectedIcon: Icon(Icons.cloud),
-                          label: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Storage'),
-                              SizedBox(height: 5),
-                              Container(
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 100,
-                                      child: LinearProgressIndicator(
-                                        backgroundColor: Colors.grey,
-                                      ),
-                                    ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      '10% of 14.5GB',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              buildLargeSideNav(selectedIndex: 0),
+              VerticalDivider(
+                thickness: 0.6,
+                width: 0.6,
+                color: (currentDevice.darkMode) ? Colors.white : Colors.black,
               ),
-              VerticalDivider(thickness: 1, width: 1),
               Expanded(
                 child: Column(
                   children: [
@@ -124,11 +62,14 @@ class LargeScreenHome extends StatelessWidget {
                         ),
                         itemCount: 10,
                         itemBuilder: (context, index) {
-                          return Container(
-                            alignment: Alignment.center,
-                            child: Text('Test'),
-                            decoration: BoxDecoration(
-                              color: Colors.amber,
+                          return InkWell(
+                            onTap: () {},
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Image.asset(data[index].photos),
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                              ),
                             ),
                           );
                         },
@@ -139,12 +80,56 @@ class LargeScreenHome extends StatelessWidget {
               ),
             ],
           ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {},
-            label: Text('Upload'),
-            icon: Icon(Icons.add),
-            isExtended: true,
-          ),
+          floatingActionButton: (currentDevice.designType == 'Cupertino')
+              ? InkWell(
+                  onTap: () {},
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 20, sigmaY: 24),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: (currentDevice.darkMode)
+                              ? Color(0xff686868).withOpacity(0.5)
+                              : Color(0xff989A9B).withOpacity(0.5),
+                        ),
+                        width: 150,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Upload',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: (currentDevice.darkMode)
+                                    ? Color(0xffF6F6F6)
+                                    : Color(0xff565656),
+                              ),
+                            ),
+                            SizedBox(width: 5),
+                            Icon(
+                              CupertinoIcons.add,
+                              size: 20,
+                              color: (currentDevice.darkMode)
+                                  ? Color(0xffF6F6F6)
+                                  : Color(0xff565656),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : FloatingActionButton.extended(
+                  onPressed: () {},
+                  label: Text('Upload'),
+                  icon: Icon(Icons.add),
+                  isExtended: true,
+                ),
         );
       },
     );
@@ -156,9 +141,11 @@ class CupertinoAppBarButton extends StatelessWidget {
     Key key,
     this.iconData,
     this.onTap,
+    this.size,
   }) : super(key: key);
   final IconData iconData;
   final Function onTap;
+  final double size;
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -166,7 +153,7 @@ class CupertinoAppBarButton extends StatelessWidget {
       child: Container(
         padding: (currentDevice.platform == 'Ios')
             ? EdgeInsets.all(5)
-            : EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+            : EdgeInsets.symmetric(vertical: 5, horizontal: 12),
         decoration: BoxDecoration(
           color: (currentDevice.platform == 'Ios')
               ? Colors.transparent
@@ -184,8 +171,9 @@ class CupertinoAppBarButton extends StatelessWidget {
         ),
         child: Icon(
           iconData,
-          size: 22,
-          color: (currentDevice.darkMode) ? Colors.white : Color(0xff565656),
+          size: size ?? 19,
+          color:
+              (currentDevice.darkMode) ? Color(0xffF6F6F6) : Color(0xff565656),
         ),
       ),
     );
@@ -295,7 +283,8 @@ Widget buildLargeAppBar({String leading, Widget body, List<Widget> trailing}) {
           leading: Text(
             leading ?? 'Cupertino',
             style: TextStyle(
-              color: (currentDevice.darkMode) ? Colors.white : Colors.black,
+              color:
+                  (currentDevice.darkMode) ? Colors.white : Color(0xff4E4F4F),
               fontWeight: FontWeight.bold,
               fontSize: 30,
             ),
@@ -322,6 +311,283 @@ Widget buildLargeAppBar({String leading, Widget body, List<Widget> trailing}) {
       leading: leading ?? Text('Other'),
       body: body ?? Container(),
       trailing: trailing ?? Container(),
+    );
+  }
+}
+
+Widget buildLargeSideNav({int selectedIndex, Function(int) onSelectedIndex}) {
+  if (currentDevice.designType == 'Material') {
+    return Container(
+      color: Colors.grey.withOpacity(0.3),
+      child: NavigationRail(
+        backgroundColor: (currentDevice.darkMode) ? Colors.black : Colors.white,
+        extended: true,
+        selectedIndex: selectedIndex,
+        onDestinationSelected: onSelectedIndex,
+        groupAlignment: -1.0,
+        destinations: [
+          NavigationRailDestination(
+            icon: Icon(Icons.photo_outlined),
+            selectedIcon: Icon(Icons.photo),
+            label: Text('Photos'),
+          ),
+          NavigationRailDestination(
+            icon: Icon(Icons.favorite_outline),
+            selectedIcon: Icon(Icons.favorite),
+            label: Text('Favourite'),
+          ),
+          NavigationRailDestination(
+            icon: Icon(Icons.delete_outline),
+            selectedIcon: Icon(Icons.delete),
+            label: Text('Bin'),
+          ),
+          NavigationRailDestination(
+            padding: EdgeInsets.only(top: 15),
+            icon: Icon(Icons.cloud_outlined),
+            selectedIcon: Icon(Icons.cloud),
+            label: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Storage'),
+                SizedBox(height: 5),
+                Container(
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 100,
+                        child: LinearProgressIndicator(
+                          backgroundColor: Colors.grey,
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        '10% of 14.5GB',
+                        style: TextStyle(
+                          fontSize: 10,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  } else if (currentDevice.designType == 'Cupertino') {
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
+        child: Container(
+          color: Colors.grey.withOpacity(0.3),
+          child: NavigationRail(
+            backgroundColor: Colors.transparent,
+            unselectedIconTheme: IconThemeData(
+              color: (currentDevice.darkMode)
+                  ? Color(0xff565656)
+                  : Color(0xff4E4F4F),
+            ),
+            unselectedLabelTextStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: (currentDevice.darkMode)
+                  ? Color(0xff565656)
+                  : Color(0xff4E4F4F),
+            ),
+            selectedLabelTextStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: (currentDevice.darkMode)
+                  ? Color(0xff565656)
+                  : Color(0xff4E4F4F),
+            ),
+            selectedIconTheme: IconThemeData(
+              color: (currentDevice.darkMode)
+                  ? Color(0xff565656)
+                  : Color(0xff4E4F4F),
+            ),
+            extended: true,
+            selectedIndex: selectedIndex,
+            onDestinationSelected: onSelectedIndex,
+            groupAlignment: -1.0,
+            destinations: [
+              NavigationRailDestination(
+                icon: Icon(CupertinoIcons.photo),
+                selectedIcon: Icon(CupertinoIcons.photo_fill),
+                label: Text('Photos'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(CupertinoIcons.bookmark),
+                selectedIcon: Icon(CupertinoIcons.bookmark_solid),
+                label: Text('Favourite'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(CupertinoIcons.delete),
+                selectedIcon: Icon(CupertinoIcons.delete_solid),
+                label: Text('Bin'),
+              ),
+              NavigationRailDestination(
+                padding: EdgeInsets.only(top: 15),
+                icon: Icon(Icons.cloud_outlined),
+                selectedIcon: Icon(Icons.cloud),
+                label: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Storage'),
+                    SizedBox(height: 5),
+                    Container(
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 100,
+                            child: LinearProgressIndicator(
+                              backgroundColor: Colors.grey,
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            '10% of 14.5GB',
+                            style: TextStyle(
+                              fontSize: 10,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  } else if (currentDevice.designType == 'Metro') {
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
+        child: Container(
+          color: Colors.grey.withOpacity(0.3),
+          child: NavigationRail(
+            backgroundColor: Colors.transparent,
+            extended: true,
+            selectedIndex: selectedIndex,
+            onDestinationSelected: onSelectedIndex,
+            groupAlignment: -1.0,
+            destinations: [
+              NavigationRailDestination(
+                icon: Icon(Icons.photo_outlined),
+                selectedIcon: Icon(Icons.photo),
+                label: Text('Photos'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.favorite_outline),
+                selectedIcon: Icon(Icons.favorite),
+                label: Text('Favourite'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.delete_outline),
+                selectedIcon: Icon(Icons.delete),
+                label: Text('Bin'),
+              ),
+              NavigationRailDestination(
+                padding: EdgeInsets.only(top: 15),
+                icon: Icon(Icons.cloud_outlined),
+                selectedIcon: Icon(Icons.cloud),
+                label: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Storage'),
+                    SizedBox(height: 5),
+                    Container(
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 100,
+                            child: LinearProgressIndicator(
+                              backgroundColor: Colors.grey,
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            '10% of 14.5GB',
+                            style: TextStyle(
+                              fontSize: 10,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  } else {
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
+        child: Container(
+          color: Colors.grey.withOpacity(0.3),
+          child: NavigationRail(
+            backgroundColor: Colors.transparent,
+            extended: true,
+            selectedIndex: selectedIndex,
+            onDestinationSelected: onSelectedIndex,
+            groupAlignment: -1.0,
+            destinations: [
+              NavigationRailDestination(
+                icon: Icon(Icons.photo_outlined),
+                selectedIcon: Icon(Icons.photo),
+                label: Text('Photos'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.favorite_outline),
+                selectedIcon: Icon(Icons.favorite),
+                label: Text('Favourite'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.delete_outline),
+                selectedIcon: Icon(Icons.delete),
+                label: Text('Bin'),
+              ),
+              NavigationRailDestination(
+                padding: EdgeInsets.only(top: 15),
+                icon: Icon(Icons.cloud_outlined),
+                selectedIcon: Icon(Icons.cloud),
+                label: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Storage'),
+                    SizedBox(height: 5),
+                    Container(
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 100,
+                            child: LinearProgressIndicator(
+                              backgroundColor: Colors.grey,
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            '10% of 14.5GB',
+                            style: TextStyle(
+                              fontSize: 10,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
