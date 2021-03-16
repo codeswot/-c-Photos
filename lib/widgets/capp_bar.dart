@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_starter/helpers/frontend/platform_checker.dart';
 
 class CAppBar extends StatelessWidget {
   const CAppBar({
@@ -17,13 +18,15 @@ class CAppBar extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       decoration: appBarStyle ?? BoxDecoration(color: Colors.white),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          (leading ?? Container()),
-          (body ?? Container()),
-          (trailing ?? Container()),
-        ],
+      child: SafeArea(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            (leading ?? Container()),
+            (body ?? Container()),
+            (trailing ?? Container()),
+          ],
+        ),
       ),
     );
   }

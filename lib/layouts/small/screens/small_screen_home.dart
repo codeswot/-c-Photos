@@ -24,23 +24,23 @@ class SmallScreenHome extends StatelessWidget {
             child: buildSmallAppBar(
               leading: CupertinoAppBarButton(
                 iconData: CupertinoIcons.bars,
-                size: 10,
+                size: (currentDevice.platform == "Ios") ? 14 : 11,
               ),
               body: '[C]Photos',
               trailing: [
                 CupertinoAppBarButton(
                   iconData: CupertinoIcons.search,
-                  size: 10,
+                  size: (currentDevice.platform == "Ios") ? 14 : 11,
                 ),
                 SizedBox(width: 5),
                 CupertinoAppBarButton(
                   iconData: CupertinoIcons.question,
-                  size: 10,
+                  size: (currentDevice.platform == "Ios") ? 14 : 11,
                 ),
                 SizedBox(width: 5),
                 CupertinoAppBarButton(
                   iconData: CupertinoIcons.settings,
-                  size: 10,
+                  size: (currentDevice.platform == "Ios") ? 14 : 11,
                 ),
                 SizedBox(width: 5),
                 CircleAvatar(
@@ -182,7 +182,7 @@ Widget buildSmallAppBar({Widget leading, String body, List<Widget> trailing}) {
                 color:
                     (currentDevice.darkMode) ? Colors.white : Color(0xff4E4F4F),
                 fontWeight: FontWeight.bold,
-                fontSize: 15,
+                fontSize: 17,
               ),
             ),
             trailing: Row(

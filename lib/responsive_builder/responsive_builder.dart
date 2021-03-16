@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_starter/helpers/frontend/get_device_info.dart';
 import 'package:flutter_firebase_starter/helpers/frontend/get_device_screen_type.dart';
 import 'package:flutter_firebase_starter/utils/device_info.dart';
 
